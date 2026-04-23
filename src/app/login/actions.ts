@@ -9,7 +9,7 @@ export async function login(formData: FormData) {
   if (!email || !password) return { error: 'Fyll i e-post och lösenord.' }
   const supabase = createClient()
   const { error } = await supabase.auth.signInWithPassword({ email, password })
-  if (error) return { error: 'Fel e-post eller lösenord.' }
+  if (error) return { error: error.message }
   revalidatePath('/', 'layout')
   redirect('/')
 }
