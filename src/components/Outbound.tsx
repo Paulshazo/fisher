@@ -89,13 +89,6 @@ export default function Outbound({
               </select>
             </div>
             <div className="field"><label>Registered By</label><input type="text" placeholder="Your name" value={form.regnr} onChange={e => set('regnr', e.target.value)} /></div>
-            <div className="field"><label>Supplier</label>
-              <select value={form.lev} onChange={e => set('lev', e.target.value)}>
-                <option value="">Select supplier...</option>
-                <option>Fisher France</option><option>Fisher UK</option><option>Fisher Germany</option>
-                <option>LED</option><option>CORNING</option><option>EPPENDORF</option><option>OTHER</option>
-              </select>
-            </div>
             <div className="field"><label>Fisher Reference</label><input type="text" placeholder="FR-12345" value={form.po} onChange={e => set('po', e.target.value)} /></div>
             <div className="field"><label>Supplier Reference</label><input type="text" placeholder="Supplier ref..." value={form.artikel} onChange={e => set('artikel', e.target.value)} /></div>
             <div className="field"><label>Pallet Count</label><input type="number" min={0} placeholder="0" value={form.antal} onChange={e => set('antal', e.target.value)} /></div>
