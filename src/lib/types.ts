@@ -1,4 +1,4 @@
-export type Status = 'På väg' | 'Lossat' | 'Försenat'
+export type Status = 'In Transit' | 'Received' | 'Delayed'
 
 export interface Leverans {
   id: number
@@ -15,6 +15,15 @@ export interface Leverans {
   inav: string | null
   utcheckning: string | null
   komm: string | null
+  org: string | null
+  from_org: string | null
   created_at: string
   updated_at: string
+}
+
+export const ORGS = ['SE', 'UK', 'FR', 'DE', 'IR', 'SP'] as const
+export type Org = typeof ORGS[number]
+export const ORG_LABEL: Record<string, string> = {
+  SE: 'Fisher SE', UK: 'Fisher UK', FR: 'Fisher FR',
+  DE: 'Fisher DE', IR: 'Fisher IR', SP: 'Fisher SP',
 }
