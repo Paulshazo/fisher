@@ -104,7 +104,7 @@ export default function Outbound({
           </div>
           <div className="ar">
             <button className="btn" onClick={() => setForm({ ...blank, datum: todayISO(), levdatum: todayISO() })}>Clear</button>
-            <button className="btn bp" disabled={pending} onClick={submit}>{pending ? 'Sending…' : `Send to ${ORG_LABEL[toFisher]} →`}</button>
+            <button className="btn bp" disabled={pending} onClick={submit}>{pending ? 'Saving…' : 'Register Shipment →'}</button>
           </div>
         </div>
       </div>
@@ -122,13 +122,13 @@ export default function Outbound({
           {outboundLog.length === 0 ? <p className="empty">No outbound shipments sent yet</p> : (
             <table><thead><tr>
               <th>Dispatch Date</th><th>Delivery Date</th><th>To Fisher</th><th>Carrier</th>
-              <th>Supplier</th><th>Fisher Ref</th><th>Pallets</th><th>Lines</th><th>Status</th><th>Action</th>
+              <th>Fisher Ref</th><th>Pallets</th><th>Lines</th><th>Status</th><th>Action</th>
             </tr></thead>
             <tbody>{outboundLog.map(e => (
               <tr key={e.id}>
                 <td>{fmtDate(e.datum)}</td><td>{fmtDate(e.levdatum)}</td>
                 <td><span style={{ fontSize:10, background:'rgba(26,79,255,.1)', color:'var(--blue)', padding:'2px 7px', borderRadius:2 }}>Fisher {e.org}</span></td>
-                <td>{e.transport||'—'}</td><td>{e.lev||'—'}</td><td>{e.po||'—'}</td>
+                <td>{e.transport||'—'}</td><td>{e.po||'—'}</td>
                 <td>{e.antal||'—'}</td><td>{e.dock||'—'}</td><td><Badge status={e.status}/></td>
                 <td style={{ display:'flex', gap:5 }}><RowActions row={e} setData={setData}/></td>
               </tr>
