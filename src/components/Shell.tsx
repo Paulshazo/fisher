@@ -1,6 +1,5 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { logout } from '@/app/login/actions'
 import type { Leverans } from '@/lib/types'
 import Dashboard from './Dashboard'
 import Registrering from './Registrering'
@@ -33,9 +32,6 @@ export default function Shell({ initialData }: { initialData: Leverans[] }) {
         <div style={{ display:'flex', alignItems:'center', gap:'1.5rem' }}>
           <div className="db-status"><div className="db-dot ok"></div><span>ansluten</span></div>
           <div className="clock">{clock}</div>
-          <form action={logout}>
-            <button className="btn btn-sm" type="submit" style={{ background:'transparent', color:'rgba(247,245,240,.55)', border:'1px solid rgba(247,245,240,.15)' }}>Logga ut</button>
-          </form>
         </div>
       </div>
       <div className="layout">

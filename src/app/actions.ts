@@ -5,8 +5,6 @@ import type { Leverans, Status } from '@/lib/types'
 
 export async function createLeverans(input: Partial<Leverans>): Promise<{ data?: Leverans; error?: string }> {
   const supabase = createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Ej inloggad.' }
   const payload = {
     datum: input.datum || null,
     levdatum: input.levdatum || null,
@@ -20,7 +18,6 @@ export async function createLeverans(input: Partial<Leverans>): Promise<{ data?:
     status: (input.status || 'På väg') as Status,
     inav: input.inav || null,
     komm: input.komm || null,
-    created_by: user.id,
   }
   const { data, error } = await supabase.from('leveranser').insert(payload).select('*').single()
   if (error) return { error: error.message }
