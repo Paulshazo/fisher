@@ -25,8 +25,8 @@ export default function ExportModal({ rows, allRows, isFiltered, onClose }: Prop
     return acc
   }, {})
 
-  function handleExcel() { exportExcel(target); onClose() }
-  function handleCSV()   { exportCSV(target);   onClose() }
+  function handleExcel() { exportExcel(target).then(() => onClose()) }
+  function handleCSV()   { exportCSV(target); onClose() }
 
   return (
     <div className="modal-overlay open" onClick={e => { if (e.target === e.currentTarget) onClose() }}>

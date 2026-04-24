@@ -59,22 +59,51 @@ export default function InboundLog({
       <div className="tc log-table">
         <div className="ts">
           {rows.length === 0 ? <p className="empty">No records match the filter</p> : (
-            <table><thead><tr>
-              <th>Dispatch Date</th><th>Delivery Date</th><th>Carrier</th><th>Registered By</th>
-              <th>Supplier</th><th>Fisher Ref</th><th>Supplier Ref</th>
-              <th>Pallets</th><th>Lines</th><th>Status</th><th>Received By</th><th>From</th><th>Comment</th><th>Action</th>
-            </tr></thead>
-            <tbody>{rows.map(e => (
-              <tr key={e.id}>
-                <td>{fmtDate(e.datum)}</td><td>{fmtDate(e.levdatum)}</td><td>{e.transport||'—'}</td><td>{e.regnr||'—'}</td>
-                <td>{e.lev||'—'}</td><td>{e.po||'—'}</td><td>{e.artikel||'—'}</td>
-                <td>{e.antal||'—'}</td><td>{e.dock||'—'}</td><td><Badge status={e.status}/></td>
-                <td>{e.inav||'—'}</td>
-                <td>{e.from_org ? <span style={{ fontSize:10, background:'rgba(26,79,255,.1)', color:'var(--blue)', padding:'2px 7px', borderRadius:2, fontFamily:'var(--font-m)' }}>Fisher {e.from_org}</span> : '—'}</td>
-                <td style={{ maxWidth:140, whiteSpace:'normal' }}>{e.komm||'—'}</td>
-                <td style={{ display:'flex', gap:5 }}><RowActions row={e} setData={setData}/></td>
-              </tr>
-            ))}</tbody></table>
+            <table className="log-tbl">
+              <colgroup>
+                <col style={{width:'7%'}}/>  {/* Dispatch Date */}
+                <col style={{width:'7%'}}/>  {/* Delivery Date */}
+                <col style={{width:'5.5%'}}/>{/* Carrier */}
+                <col className="col-regby" style={{width:'5.5%'}}/>{/* Registered By */}
+                <col style={{width:'8%'}}/>  {/* Supplier */}
+                <col style={{width:'10%'}}/> {/* Fisher Ref */}
+                <col style={{width:'11%'}}/> {/* Supplier Ref */}
+                <col style={{width:'4.5%'}}/>{/* Pallets */}
+                <col style={{width:'4.5%'}}/>{/* Lines */}
+                <col style={{width:'7%'}}/>  {/* Status */}
+                <col style={{width:'5.5%'}}/>{/* Received By */}
+                <col className="col-from" style={{width:'5%'}}/>{/* From */}
+                <col style={{width:'10%'}}/> {/* Comment */}
+                <col style={{width:'9%'}}/>  {/* Action */}
+              </colgroup>
+              <thead><tr>
+                <th>Dispatch Date</th><th>Delivery Date</th><th>Carrier</th>
+                <th className="col-regby">Registered By</th>
+                <th>Supplier</th><th>Fisher Ref</th><th>Supplier Ref</th>
+                <th>Pallets</th><th>Lines</th><th>Status</th><th>Received By</th>
+                <th className="col-from">From</th><th>Comment</th><th>Action</th>
+              </tr></thead>
+              <tbody>{rows.map(e => (
+                <tr key={e.id}>
+                  <td title={e.datum||''}>{fmtDate(e.datum)}</td>
+                  <td title={e.levdatum||''}>{fmtDate(e.levdatum)}</td>
+                  <td title={e.transport||''}>{e.transport||'—'}</td>
+                  <td className="col-regby" title={e.regnr||''}>{e.regnr||'—'}</td>
+                  <td title={e.lev||''}>{e.lev||'—'}</td>
+                  <td title={e.po||''}>{e.po||'—'}</td>
+                  <td title={e.artikel||''}>{e.artikel||'—'}</td>
+                  <td>{e.antal||'—'}</td>
+                  <td>{e.dock||'—'}</td>
+                  <td><Badge status={e.status}/></td>
+                  <td title={e.inav||''}>{e.inav||'—'}</td>
+                  <td className="col-from">
+                    {e.from_org ? <span style={{ fontSize:10, background:'rgba(26,79,255,.1)', color:'var(--blue)', padding:'2px 7px', borderRadius:2, fontFamily:'var(--font-m)' }}>Fisher {e.from_org}</span> : '—'}
+                  </td>
+                  <td className="td-comment" title={e.komm||''}>{e.komm||'—'}</td>
+                  <td className="td-action"><RowActions row={e} setData={setData}/></td>
+                </tr>
+              ))}</tbody>
+            </table>
           )}
         </div>
       </div>

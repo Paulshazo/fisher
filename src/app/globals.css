@@ -60,6 +60,18 @@ html, body { font-family: var(--font-m); background: var(--paper); color: var(--
 table { width:100%; border-collapse:collapse; }
 th { padding:9px 12px; font-size:10px; font-family:var(--font-m); text-transform:uppercase; letter-spacing:.08em; color:var(--ink3); text-align:left; border-bottom:1px solid var(--border); white-space:nowrap; background:var(--paper2); }
 td { padding:11px 12px; border-bottom:1px solid var(--border); color:var(--ink); vertical-align:middle; white-space:nowrap; font-family:var(--font-m); font-size:12px; }
+
+/* Fixed-layout table — no horizontal scroll */
+.log-tbl { table-layout:fixed; }
+.log-tbl td { overflow:hidden; text-overflow:ellipsis; max-width:0; }
+.log-tbl .td-comment { white-space:normal; overflow:hidden; max-width:0; }
+.log-tbl .td-action { overflow:visible; white-space:normal; padding:6px 8px; }
+
+/* Hide low-priority columns on narrower desktops */
+@media (min-width:769px) and (max-width:1080px) {
+  .log-tbl .col-regby,.log-tbl th.col-regby,
+  .log-tbl .col-from,.log-tbl th.col-from { display:none; }
+}
 tr:last-child td { border-bottom:none; }
 tr:hover td { background:var(--paper2); }
 .badge { display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:2px; font-size:10px; font-family:var(--font-m); letter-spacing:.05em; font-weight:500; text-transform:uppercase; }
