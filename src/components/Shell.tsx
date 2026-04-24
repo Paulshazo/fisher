@@ -6,7 +6,7 @@ import Dashboard from './Dashboard'
 import Registrering from './Registrering'
 import InboundLog from './InboundLog'
 import Outbound from './Outbound'
-import { exportCSV } from '@/lib/csv'
+import { exportExcel } from '@/lib/export'
 
 type Tab = 'dashboard' | 'registration' | 'inbound' | 'outbound'
 
@@ -109,9 +109,9 @@ export default function Shell({ initialData }: { initialData: Leverans[] }) {
 
           <div className="sdiv" />
 
-          <button className="nav-item" onClick={() => exportCSV(orgData)}>
+          <button className="nav-item" onClick={() => exportExcel(orgData)}>
             <svg className="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={1.5}><path d="M3 10v3h10v-3M8 2v8M5 7l3 3 3-3"/></svg>
-            <span className="nav-label">Export CSV</span>
+            <span className="nav-label">Export Excel</span>
           </button>
         </aside>
 
