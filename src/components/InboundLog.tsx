@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react'
 import type { Leverans } from '@/lib/types'
 import Badge from './Badge'
 import RowActions from './RowActions'
-import { fmtDate } from '@/lib/dates'
+import { fmtDate, isoWeekKey, isoWeekLabel, monthKey, monthLabel } from '@/lib/dates'
 import ExportModal from './ExportModal'
 
 export default function InboundLog({
@@ -12,15 +12,34 @@ export default function InboundLog({
   const [q, setQ]   = useState('')
   const [fs, setFs] = useState('')
   const [fl, setFl] = useState('')
+  const [fw, setFw] = useState('')   // week filter: "2026-W17"
+  const [fm, setFm] = useState('')   // month filter: "2026-04"
   const [showExport, setShowExport] = useState(false)
 
+  /* Build sorted unique week & month lists from actual data */
+  const { weekOptions, monthOptions } = useMemo(() => {
+    const weeks = new Set<string>()
+    const months = new Set<string>()
+    data.forEach(e => {
+      const d = e.levdatum || e.datum
+      if (d) { weeks.add(isoWeekKey(d)); months.add(monthKey(d)) }
+    })
+    return {
+      weekOptions:  Array.from(weeks).sort().reverse(),
+      monthOptions: Array.from(months).sort().reverse(),
+    }
+  }, [data])
+
   const rows = useMemo(() => data.filter(e => {
+    const d = e.levdatum || e.datum
     const m = !q || [e.transport, e.regnr, e.lev, e.po, e.artikel, e.komm, e.inav, e.from_org]
       .join(' ').toLowerCase().includes(q.toLowerCase())
-    return m && (!fs || e.status === fs) && (!fl || e.lev === fl)
-  }), [data, q, fs, fl])
+    const wMatch = !fw || (d ? isoWeekKey(d) === fw : false)
+    const mMatch = !fm || (d ? monthKey(d) === fm : false)
+    return m && (!fs || e.status === fs) && (!fl || e.lev === fl) && wMatch && mMatch
+  }), [data, q, fs, fl, fw, fm])
 
-  const isFiltered = !!(q || fs || fl)
+  const isFiltered = !!(q || fs || fl || fw || fm)
 
   return (
     <div className="screen active">
@@ -43,6 +62,25 @@ export default function InboundLog({
           <option>Fisher France</option><option>Fisher UK</option><option>Fisher Germany</option>
           <option>LED</option><option>CORNING</option><option>EPPENDORF</option><option>OTHER</option>
         </select>
+        <select value={fw} onChange={e => setFw(e.target.value)} style={{ maxWidth:170 }}>
+          <option value="">All weeks</option>
+          {weekOptions.map(wk => (
+            <option key={wk} value={wk}>{isoWeekLabel(wk)}</option>
+          ))}
+        </select>
+        <select value={fm} onChange={e => setFm(e.target.value)} style={{ maxWidth:145 }}>
+          <option value="">All months</option>
+          {monthOptions.map(mk => (
+            <option key={mk} value={mk}>{monthLabel(mk)}</option>
+          ))}
+        </select>
+        {isFiltered && (
+          <button
+            className="btn btn-sm"
+            style={{ color:'var(--ink3)', borderColor:'var(--border)', fontSize:10, padding:'4px 9px' }}
+            onClick={() => { setQ(''); setFs(''); setFl(''); setFw(''); setFm('') }}
+          >✕ Clear</button>
+        )}
         <button
           className="btn btn-sm bd"
           style={{ marginLeft: 'auto' }}

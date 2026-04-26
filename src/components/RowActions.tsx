@@ -2,6 +2,7 @@
 import { useState, useTransition } from 'react'
 import type { Leverans, Status } from '@/lib/types'
 import { updateLeverans, deleteLeverans } from '@/app/actions'
+import { todayISO } from '@/lib/dates'
 
 type Props = {
   row: Leverans
@@ -11,10 +12,13 @@ type Props = {
 
 export default function RowActions({ row, setData, compact }: Props) {
   const [openReceive, setOpenReceive] = useState(false)
+  const [openDelay,   setOpenDelay]   = useState(false)
   const [openStatus, setOpenStatus]   = useState(false)
   const [openDelete, setOpenDelete]   = useState(false)
   const [pending, startTransition]    = useTransition()
   const [inav, setInav]               = useState('')
+  const [delayedBy, setDelayedBy]     = useState('')
+  const [newLevdatum, setNewLevdatum] = useState('')
   const [newStatus, setNewStatus]     = useState<Status>(row.status)
   const [newInav, setNewInav]         = useState('')
 
@@ -35,6 +39,14 @@ export default function RowActions({ row, setData, compact }: Props) {
     <>
       {row.status !== 'Received' && (
         <button className="btn bs btn-sm" onClick={() => setOpenReceive(true)}>✓ Receive</button>
+      )}
+      {row.status !== 'Received' && (
+        <button
+          className="btn btn-sm"
+          onClick={() => { setDelayedBy(''); setNewLevdatum(''); setOpenDelay(true) }}
+          title="Mark as Delayed — move to new date"
+          style={{ color:'var(--amber)', borderColor:'rgba(184,90,0,.35)', background:'var(--amber-bg)' }}
+        >⏱ Delayed</button>
       )}
       {!compact && (
         <>
@@ -57,6 +69,53 @@ export default function RowActions({ row, setData, compact }: Props) {
               <button className="btn bs btn-sm" disabled={pending || !inav.trim()}
                 onClick={() => { update({ status:'Received', inav: inav.trim() }); setOpenReceive(false); setInav('') }}>
                 ✓ Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {openDelay && (
+        <div className="modal-overlay open" onClick={e => e.target === e.currentTarget && setOpenDelay(false)}>
+          <div className="modal-box">
+            <div className="modal-title" style={{ color:'var(--amber)' }}>⏱ Mark as Delayed</div>
+            <div className="modal-sub">{info}</div>
+            <div style={{ display:'flex', flexDirection:'column', gap:'.875rem', marginBottom:'.5rem' }}>
+              <div className="field">
+                <label>Moved By — name of person</label>
+                <input
+                  type="text"
+                  value={delayedBy}
+                  onChange={e => setDelayedBy(e.target.value)}
+                  placeholder="Your name..."
+                  autoFocus
+                />
+              </div>
+              <div className="field">
+                <label>New Delivery Date</label>
+                <input
+                  type="date"
+                  value={newLevdatum}
+                  min={todayISO()}
+                  onChange={e => setNewLevdatum(e.target.value)}
+                />
+              </div>
+            </div>
+            <div style={{ background:'var(--amber-bg)', borderRadius:'var(--radius)', padding:'.65rem 1rem', fontSize:11, color:'var(--amber)', marginTop:'.5rem' }}>
+              ⚠ Shipment will be moved to the new date and marked as Delayed.
+            </div>
+            <div className="modal-actions">
+              <button className="btn btn-sm" onClick={() => setOpenDelay(false)}>Cancel</button>
+              <button
+                className="btn btn-sm"
+                disabled={pending || !delayedBy.trim() || !newLevdatum}
+                style={{ background:'var(--amber)', color:'#fff', borderColor:'var(--amber)' }}
+                onClick={() => {
+                  update({ status: 'Delayed', levdatum: newLevdatum, inav: delayedBy.trim() })
+                  setOpenDelay(false)
+                }}
+              >
+                ⏱ Confirm Delay
               </button>
             </div>
           </div>
