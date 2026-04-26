@@ -12,13 +12,13 @@ type Props = {
 }
 
 /** Renders children into document.body — escapes any parent td/table context */
-function Modal({ onClose, children }: { onClose: () => void; children: React.ReactNode }) {
+function Modal({ onClose, wide, children }: { onClose: () => void; wide?: boolean; children: React.ReactNode }) {
   return createPortal(
     <div
       className="modal-overlay open"
       onClick={e => e.target === e.currentTarget && onClose()}
     >
-      <div className="modal-box">
+      <div className="modal-box" style={wide ? { width: 520 } : undefined}>
         {children}
       </div>
     </div>,
@@ -34,8 +34,8 @@ export default function RowActions({ row, setData, compact }: Props) {
   const [openDelete,  setOpenDelete]  = useState(false)
   const [pending, startTransition]    = useTransition()
   const [inav, setInav]               = useState('')
-  const [delayedBy, setDelayedBy]     = useState('')
-  const [newLevdatum, setNewLevdatum] = useState('')
+  const [delayComment, setDelayComment] = useState('')
+  const [newLevdatum, setNewLevdatum]   = useState('')
   const [newStatus, setNewStatus]     = useState<Status>(row.status)
   const [newInav, setNewInav]         = useState('')
 
@@ -64,7 +64,7 @@ export default function RowActions({ row, setData, compact }: Props) {
       {row.status !== 'Received' && (
         <button
           className="btn btn-sm"
-          onClick={() => { setDelayedBy(''); setNewLevdatum(''); setOpenDelay(true) }}
+          onClick={() => { setDelayComment(''); setNewLevdatum(''); setOpenDelay(true) }}
           title="Mark as Delayed — move to new date"
           style={{ color:'var(--amber)', borderColor:'rgba(184,90,0,.35)', background:'var(--amber-bg)' }}
         >⏱ Delayed</button>
@@ -96,20 +96,10 @@ export default function RowActions({ row, setData, compact }: Props) {
       )}
 
       {mounted && openDelay && (
-        <Modal onClose={() => setOpenDelay(false)}>
+        <Modal onClose={() => setOpenDelay(false)} wide>
           <div className="modal-title" style={{ color:'var(--amber)' }}>⏱ Mark as Delayed</div>
           <div className="modal-sub">{info}</div>
           <div style={{ display:'flex', flexDirection:'column', gap:'.875rem', marginBottom:'.5rem' }}>
-            <div className="field">
-              <label>Moved By — name of person</label>
-              <input
-                type="text"
-                value={delayedBy}
-                onChange={e => setDelayedBy(e.target.value)}
-                placeholder="Your name..."
-                autoFocus
-              />
-            </div>
             <div className="field">
               <label>New Delivery Date</label>
               <input
@@ -117,6 +107,17 @@ export default function RowActions({ row, setData, compact }: Props) {
                 value={newLevdatum}
                 min={todayISO()}
                 onChange={e => setNewLevdatum(e.target.value)}
+                autoFocus
+              />
+            </div>
+            <div className="field">
+              <label>Comment</label>
+              <textarea
+                value={delayComment}
+                onChange={e => setDelayComment(e.target.value)}
+                placeholder="Reason for delay, notes..."
+                rows={4}
+                style={{ resize:'vertical' }}
               />
             </div>
           </div>
@@ -127,10 +128,10 @@ export default function RowActions({ row, setData, compact }: Props) {
             <button className="btn btn-sm" onClick={() => setOpenDelay(false)}>Cancel</button>
             <button
               className="btn btn-sm"
-              disabled={pending || !delayedBy.trim() || !newLevdatum}
+              disabled={pending || !newLevdatum}
               style={{ background:'var(--amber)', color:'#fff', borderColor:'var(--amber)' }}
               onClick={() => {
-                update({ status: 'Delayed', levdatum: newLevdatum, inav: delayedBy.trim() })
+                update({ status: 'Delayed', levdatum: newLevdatum, komm: delayComment.trim() || row.komm || '' })
                 setOpenDelay(false)
               }}
             >
