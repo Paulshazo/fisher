@@ -72,7 +72,7 @@ export default function Shell({ initialData }: { initialData: Leverans[] }) {
   return (
     <>
       <div className="topbar">
-        <div className="brand"><div className="dot"></div>INBOUND</div>
+        <div className="brand"><div className="dot"></div>Fisher Inbound Register</div>
         <div style={{ display:'flex', alignItems:'center', gap:'1rem' }}>
           {/* Org selector — shown on mobile in topbar */}
           <div className="topbar-org">
@@ -80,6 +80,7 @@ export default function Shell({ initialData }: { initialData: Leverans[] }) {
               {ORGS.map(o => <option key={o} value={o}>{ORG_LABEL[o]}</option>)}
             </select>
           </div>
+          <button className="btn bd btn-sm" onClick={() => window.location.reload()} title="Refresh data">↻ Refresh</button>
           <div className="db-status"><div className="db-dot ok"></div><span>connected</span></div>
           <div className="clock">{clock}</div>
         </div>
