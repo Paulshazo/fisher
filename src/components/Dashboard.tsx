@@ -60,7 +60,7 @@ export default function Dashboard({
               <table><thead><tr><th>Carrier</th><th>Supplier</th><th>Fisher Ref</th><th>Pallets</th><th>Lines</th><th>Status</th><th>Comment</th><th>Action</th></tr></thead>
               <tbody>{dayAll.map(e => (
                 <tr key={e.id}><td>{e.transport||'—'}</td><td>{e.lev||'—'}</td><td>{e.po||'—'}</td><td>{e.antal||'—'}</td><td>{e.dock||'—'}</td>
-                <td><Badge status={e.status}/></td><td style={{ maxWidth:160, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }} title={e.komm||''}>{e.komm||'—'}</td><td><RowActions row={e} compact setData={setData}/></td></tr>
+                <td><Badge status={e.status}/></td><td style={{ whiteSpace:'normal', wordBreak:'break-word', minWidth:120 }}>{e.komm||'—'}</td><td><RowActions row={e} compact setData={setData}/></td></tr>
               ))}</tbody></table>
             )}
           </div>
